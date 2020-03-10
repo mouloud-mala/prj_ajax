@@ -38,7 +38,15 @@ public class ServletTennis extends HttpServlet {
                 response.getWriter().write("<joueurs>" + listeJoueursARenvoyer +"</joueurs>");
                 break;
             case "chercherUnJoueur" :
+                String quiChercher = request.getParameter("nom");
+                Joueur joueurByName = new Joueur();
+                joueurByName.chercher(quiChercher);
+                // prepare la reponse
+                String infosJoueur = joueurByName.getNom() + ";" + joueurByName.getPrenom() + ";" + joueurByName.getTaille() + ";" + joueurByName.getGenre();
 
+                response.setContentType("text/xml");
+                response.setHeader("Cache-Control", "no-cache");
+                response.getWriter().write("<joueur>" + infosJoueur + "</joueur>");
                 break;
             default:
         }

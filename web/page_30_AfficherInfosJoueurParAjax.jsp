@@ -83,7 +83,23 @@
         }
 
         function majFiche() {
-            
+
+            if (requete.readyState === 4) {
+                if (requete.status === 200) {
+                    var nom = document.getElementById("nomJoueur");
+                    var prenom = document.getElementById("prenomJoueur");
+                    var taille = document.getElementById("tailleJoueur");
+                    var genre = document.getElementById("genreJoueur");
+
+                    var infosJoueursTag = requete.responseXML.getElementsByTagName("joueur")[0];
+                    var infosJoueur = infosJoueursTag.childNodes[0].nodeValue;
+                    var tabInfos = infosJoueur.split(";");
+                    nom.textContent = tabInfos[0];
+                    prenom.textContent = tabInfos[1];
+                    taille.textContent = tabInfos[2];
+                    genre.textContent = tabInfos[3];
+                }
+            }
         }
     </script>
 </head>
@@ -103,7 +119,7 @@
     </table>
 </div>
 <!-- Info joueur -->
-<div id="description">
+<div id="infos">
     <table bgcolor="#8a2be2" width="350">
         <tr>
             <td>Nom</td>

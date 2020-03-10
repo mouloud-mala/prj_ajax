@@ -86,8 +86,8 @@ public class Joueur {
         }
     }
 
-    /*public void chercherJoueur() {
-        String reqById = "SELECT * FROM joueurs idJoueur ='" + this.getIdJoueur() + "'";
+    public void chercher() {
+        String reqById = "SELECT * FROM joueurs WHERE idJoueur ='" + this.getIdJoueur() + "'";
         try {
             ResultSet resultSet = ParametresBD.executeRequeteSQL(reqById);
             if (resultSet != null) {
@@ -96,5 +96,23 @@ public class Joueur {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
+    }
+
+    public void chercher(String nom) {
+        String reqByName = "SELECT * FROM joueurs WHERE nom ='" + nom + "'";
+        try {
+            ResultSet resultSet = ParametresBD.executeRequeteSQL(reqByName);
+            if (resultSet != null) {
+                resultSet.next();
+                this.setNom(nom);
+                this.setPrenom(resultSet.getString(3));
+                this.setTaille(resultSet.getInt(4));
+                this.setGenre(resultSet.getString(5));
+            }
+            return ;
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.setPrenom("?????");
+        }
+    }
 }
