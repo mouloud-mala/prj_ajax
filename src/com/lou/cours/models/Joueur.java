@@ -86,15 +86,24 @@ public class Joueur {
         }
     }
 
-    public void chercher() {
-        String reqById = "SELECT * FROM joueurs WHERE idJoueur ='" + this.getIdJoueur() + "'";
+    public void inserer(String nom, String prenom, int taille, String genre) {
+        String reqInsert = "INSERT INTO joueurs (nom, prenom, taille, genre) VALUES ('"
+                + nom
+                + "," + prenom
+                + "," + taille
+                + "," + genre + "')";
         try {
-            ResultSet resultSet = ParametresBD.executeRequeteSQL(reqById);
+            ResultSet resultSet = ParametresBD.executeRequeteSQL(reqInsert);
             if (resultSet != null) {
-
+                resultSet.next();
+                this.setNom(nom);
+                this.setPrenom(prenom);
+                this.setTaille(taille);
+                this.setGenre(genre);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            this.setPrenom("?????");
         }
     }
 
@@ -109,7 +118,6 @@ public class Joueur {
                 this.setTaille(resultSet.getInt(4));
                 this.setGenre(resultSet.getString(5));
             }
-            return ;
         } catch (Exception e) {
             e.printStackTrace();
             this.setPrenom("?????");

@@ -1,22 +1,22 @@
 <%--
   Created by IntelliJ IDEA.
   User: mouloud.mala
-  Date: 09/03/2020
-  Time: 13:59
+  Date: 10/03/2020
+  Time: 11:09
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>afficher info joueur par ajax</title>
+    <title>afficher auto joueur par ajax</title>
     <script>
         function init() {
             // cette fonction sera appelée des le chargement de la page
             // en premier vider le contenu de la combobox
-            document.getElementById('cmb_joueurs').options.length = 0;
+            document.getElementById('list_joueurs');
             // puis je vais invoquer un code serveur pour remplir la combobox
             //      definition du chemin
-            var url = "ServletTennis?action=listeJoueurs";
+            var url = "ServletTennis?action=liste2Joueurs";
             //      je prepare la requete HTTP
             if (window.XMLHttpRequest) {
                 requete = new XMLHttpRequest();
@@ -27,14 +27,14 @@
             requete.open('GET', url, true);
             console.log(requete);
             //
-            requete.onreadystatechange = majComboBox;
+            requete.onreadystatechange = majListe;
 
             // envoi de la requete HTTP
             requete.send(null);
 
         }
 
-        function majComboBox() {
+        function majListe() {
             //alert("Phase : " + requete.readyState);
             //alert("Phase : " + requete.status);
             // quand le code serveur repond il envoie un code en phase ( attente, execution, ececutée, ...)
@@ -46,15 +46,26 @@
                     // je recup les noms des joeueurs separé par ; dans un tableau
                     var noms = listeJoueurs.split(";");
                     // je pointe de nouveau sur la combobo
-                    var cmb = document.getElementById('cmb_joueurs');
-                    var opt = document.createElement("option");
-                    opt.appendChild(document.createTextNode(" "));
-                    cmb.appendChild(opt);
+                    var table = document.getElementById('list_joueurs');
 
                     for (var i = 0; i < noms.length; i++) {
-                        opt = document.createElement("option");
-                        opt.appendChild(document.createTextNode(noms[i]));
-                        cmb.appendChild(opt);
+                        var tr = document.createElement("tr");
+                        var tdNom = document.createElement("td");
+                        var tdPrenom = document.createElement("td");
+                        var tdTaille = document.createElement("td");
+                        var tdGenre = document.createElement("td");
+
+                        var nomJoueurs = noms[i].split(":");
+                        tdNom.appendChild(document.createTextNode(nomJoueurs[0]));
+                        tdPrenom.appendChild(document.createTextNode(nomJoueurs[1]));
+                        tdTaille.appendChild(document.createTextNode(nomJoueurs[2]));
+                        tdGenre.appendChild(document.createTextNode(nomJoueurs[3]));
+
+                        tr.appendChild(tdNom);
+                        tr.appendChild(tdPrenom);
+                        tr.appendChild(tdTaille);
+                        tr.appendChild(tdGenre);
+                        table.appendChild(tr);
                     }
                 }
                 else {
@@ -63,8 +74,8 @@
             }
         }
 
-        function recupNomSelectionne() {
-            var nomClique = document.getElementById('cmb_joueurs').options[document.getElementById('cmb_joueurs').selectedIndex].text;
+        /*function recupNomSelectionne() {
+            var nomClique = document.getElementById('list_joueurs').options[document.getElementById('list_joueurs').selectedIndex].text;
             var url = "ServletTennis?action=chercherUnJoueur&nom=" + nomClique;
             //      je prepare la requete HTTP
             if (window.XMLHttpRequest) {
@@ -80,7 +91,7 @@
 
             // envoi de la requete HTTP
             requete.send(null);
-        }
+        }*/
 
         function majFiche() {
 
@@ -101,43 +112,46 @@
                 }
             }
         }
+
+        function ajouter() {
+
+            if (requete.readyState === 4) {
+                if (requete.status === 200) {
+                    var xhr = new XMLHttpRequest();
+                    var url = "ServletTennis?action=insererJoueur&nom=" + nomClique
+                    + "&prenom=" + +
+                    + "&taille=" + +
+                    + "&genre=" + ;
+                    xhr.open('POST', url);
+                    var myForm = document.getElementById('myForm');
+                    var form = new FormData(myForm);
+                    form.append('nom', '');
+                    form.append('prenom', '');
+                    form.append('taille', '');
+                    form.append('genre', '');
+                    xhr.send(form);
+                }
+            }
+        }
     </script>
 </head>
 <body onload="init();">
 <!-- Choix du joueur -->
 <div id="liste">
-    <table bgcolor="#8a2be2" width="350">
+    <table bgcolor="#8a2be2" width="650" id="list_joueurs">
         <tr>
-            <td>Joueurs</td>
-            <td>
-                <select name="" id="cmb_joueurs" name="cmb_joueurs" onchange="recupNomSelectionne();">
-                    <option value="1">Joueur 1</option>
-                    <option value="2">Joueur 2</option>
-                </select>
-            </td>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Taille</th>
+            <th>Genre</th>
         </tr>
     </table>
-</div>
-<!-- Info joueur -->
-<div id="infos">
-    <table bgcolor="#8a2be2" width="350">
-        <tr>
-            <td>Nom</td>
-            <td><span id="nomJoueur"></span></td>
-        </tr>
-        <tr>
-            <td>Prenom</td>
-            <td><span id="prenomJoueur"></span></td>
-        </tr>
-        <tr>
-            <td>Taille</td>
-            <td><span id="tailleJoueur"></span></td>
-        </tr>
-        <tr>
-            <td>Genre</td>
-            <td><span id="genreJoueur"></span></td>
-        </tr>
-    </table>
+    <form action="" id="myForm">
+        <input type="text" id="myNom">
+        <input type="text" id="myPrenom">
+        <input type="text" id="myTaille">
+        <input type="text" id="myGenre">
+    </form>
 </div>
 </body>
 </html>
